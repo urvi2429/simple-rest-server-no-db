@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+ 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script>
+		$(document).ready(function(){
+			getall_data();
+			$("#submit_btn").on("click",function(event){
+				event.preventDefault();
+				senddoc();
+				$('form').find("input[type=text], textarea").val("");
+
+			});
+			$("#div1").on("click","#btn_cancel",function(){
+				var x=$(this).prev().attr("value")
+   				$.ajax({
+    				url:"/users/"+x,
+    				type:"DELETE",   
+    				success:function(data){
+  						$("span[value="+x+"]").parent().remove();
+   					}
+     			});
+			});
+			function senddoc(){
+				var itemname=	$("#item_name").val();
+				var pri=$("#price").val();
+				var desc=$("#description").val();
+				var jsonobj={"item_name":itemname,"description":desc,"price":pri};
+
+				$.ajax({url: " /users",
+					type: "POST",
+					data: jsonobj,
+					dataType: "json",
+					error:function(xhr,status){
+						alert(status)
+						return
+					},
+					success:function(data){
+						if(!data){
+							alert("empty")
+							return
+						}else{							
+							var	data ="<div class='well well-lg'>"+
+									   "<span class='col-sm-8'><h4>" + data.item_name + "</h4></span>"+										
+										"<span class='label label-primary'"+"value="+data.id+"><b>" + data.price +" $"+ "</b></span>"+
+										"<button type='button' class='btn' id='btn_cancel'>"+'x'+"</button>"+
+										"<span class='col-sm-12'>" + data.description +"</span>"+
+										"</div>"
+							$("#div1").appendData(data);					
+						}
+					}
+				});        
+			}
+
+		function getall_data(){
+			var print_var;
+			$.ajax({type:"GET",
+				dataType:"json",
+				url:"/users",
+				success:function(data){
+					for(var i=0;i<data.length;i++){
+							print_var +="<div class='well well-lg'>"+
+									"<span class='col-sm-8'><h4>" + data[i].item_name + "</h4></span>"+										
+										"<span class='label label-primary'"+"value="+data[i].id+"><b>" + data[i].price +" $"+ "</b></span>"+
+										"<button type='button' class='btn' id='btn_cancel'>"+'x'+"</button>"+
+										"<span class='col-sm-12'>" + data[i].description +"</span>"+
+										"</div>"
+					}
+	  				$("#div1").html(print_var)
+	  			}
+				});
+		}
+
+	});
+	</script>
+</head>
+
+<body>
+  <div class="container-fluid">
+	<div class="col-sm-12">
+		<nav class="navbar navbar-inverse">
+		    <ul class="nav navbar-nav">
+		      <li><a href="#">Store</a></li>
+		      <li class="active"><a href="#">Home</a></li>
+		      <li><a href="#">About</a> </li>
+		      <li><a href="#">Catlog</a></li>
+		      <li><a href="#">Contact</a></li>
+		    </ul>
+				  
+		</nav>
+	</div>
+    <div class="col-sm-3">
+	    <a href="#" class="list-group-item active">Cras justo odio</a>
+	    <a href="#" class="list-group-item">Dapibus ac facillsis in</a>
+	    <a href="#" class="list-group-item">Morbi leo risus</a>
+	    <a href="#" class="list-group-item">Porta ac consectetur</a>
+	    <a href="#" class="list-group-item">Vestibulum at eros</a>
+	</div>
+	<div class="col-sm-9">
+		<form>
+			<div class="col-sm-12">
+			 	<div class="col-sm-2">
+			 		<b>search</b>
+			 	</div>
+			 	<div class="col-sm-4">
+			 		<input type="text" class="form-control" placeholder="Search by name" name="search"><br/>
+			 	</div>
+			</div>
+			<div class="col-sm-12">
+				<div class="col-sm-2">
+					<b>Add items</b>		
+				 </div>
+				<div class="col-sm-2">
+				 	<input type="text" class="form-control" placeholder="item name" name="item_name" id="item_name">
+				</div>
+				<div class="col-sm-2">
+					<input type="text" class="form-control" placeholder="Description" name="description" id="description">
+				</div>
+
+				 <div class="col-sm-2">
+					<input type="text" class="form-control" placeholder="Price" name="price" id="price">
+				 </div>
+			     <div class="col-sm-1">
+			        <button type="submit" class="btn btn-default" id="submit_btn">Add</button>
+			     </div>
+
+  			 </div>
+  	 	</form>
+
+	  	 <div class="col-sm-12" id="div1">	  	  			
+		</div>
+	</div>
+	 <div class="col-sm-12" >
+		<nav class="navbar fixed-bottom navbar-inverse" >
+    	</nav>
+	</div> 	
+</div>	
+
+</body>
+</html>

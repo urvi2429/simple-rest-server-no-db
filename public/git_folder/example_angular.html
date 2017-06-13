@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+
+
+
+</head>
+<body ng-app="myApp">
+	<div ng-controller="myCtrl">
+	<input type="text" ng-model="name" />	
+	<ul>
+		<li ng-repeat="x in customers | filter:name | orderBy:'city'">{{x.name}} - {{x.city | uppercase}}</li>
+	</ul>
+	</div>
+<ng-view></ng-view>
+
+	<script>
+		var app = angular.module('myApp', ["ngRoute"]);
+		app.config(function ($routeProvider){
+			$routeProvider
+				.when('/example_angular2',
+				{
+					controller:"myctrl2",
+					templateUrl:'example_angular2.html'
+				})
+				
+				.otherwise({ redirectTo:'example_angular.html'})
+
+		});
+
+		app.controller('myCtrl', function($scope) {
+		$scope.customers=[
+						{name:'john doe',city:'islline'},
+						{name:'peater parker',city:'newyork'},
+						{name:'john neil',city:'santa clera'}
+					 ];
+		});
+
+		app.controller('myctrl2',function($scope){
+			$scope.name="urvi";
+		});
+	</script>
+			<a href="#!example_angular2"> second </a>
+
+</body>
+</html>

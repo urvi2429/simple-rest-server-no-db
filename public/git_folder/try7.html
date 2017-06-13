@@ -1,0 +1,105 @@
+<html>
+<head>
+	<style>
+	form{
+		border-style:solid;
+		border-width:1px;
+		height:100%;
+		width:50%;
+		float:left;
+	}
+	div{
+		border:1px solid;
+		height:100%;
+	}
+	</style>
+</head>
+
+<body>
+	
+	<form id="form1">
+		<input type="checkbox" id="ch1"><span id="s1">Apple</span><br/>
+		<input type="checkbox" id="ch2"><span id="s2">Banana</span><br/>
+		<input type="checkbox" id="ch3"><span id="s3">Strawberry</span><br/>
+		<input type="checkbox" id="ch4"><span id="s4">Mango</span><br/>
+		<input type="checkbox" id="ch5"><span id="s5">Cherry</span><br/>
+		<input type="button" id="add" value="ADD"></button><br/><br/>
+	</form>
+	
+	<div id="div1"></div>
+
+	<script>
+		var x=document.getElementById("form1");
+		x.addEventListener("click",myfunction);
+		console.log(this); 
+		function myfunction(e){
+			if(e.target){
+				console.log(e.target);
+				if(e.target.nodeName == "SPAN"){
+					var x=e.target.previousSibling;
+					node=document.createTextNode(e.target.innerHTML);
+					if(x.checked == false){
+						x.checked=true;
+						}else{
+							x.checked=false;
+						}
+					// var obj={
+					// 	x:e.target.previousSibling
+					// };
+					add_del.call(x);
+				}
+				else if(e.target.type == "checkbox"){
+					var x=e.target;
+					node=document.createTextNode(e.target.nextSibling.innerHTML);
+					// var obj={
+					// 	x:e.target
+					// };
+					add_del.call(x);
+				}
+				else if(e.target.type="button"){
+					myfun_add();
+				}
+			}
+		}
+
+	var add_del=function(){
+		console.log(this.checked);
+		if(this.checked == true){
+			var newparant=document.createElement("p");
+			newparant.setAttribute("class","xyz");
+			newparant.appendChild(node);
+			var parant=document.getElementById("div1");
+			parant.appendChild(newparant);
+		}else{
+			var parent2 = document.getElementById("div1");
+			var name=this.nextSibling.innerHTML;
+			var node2=document.getElementsByClassName("xyz");
+			for(var i=0;i<node2.length;i++){
+				console.log(node2[i].innerHTML)
+				if(name == node2[i].innerHTML){
+					var parent2 = document.getElementById("div1");
+					parent2.removeChild(node2[i]);
+					break;
+				}
+			}
+			x.checked=false;
+			}
+		}
+		
+		function myfun_add(){
+			var c=	prompt("Enter value");
+			var prom_p=document.createElement("span");
+			var prom_node=document.createTextNode(c);
+			prom_p.appendChild(prom_node);
+			var new1=document.createElement("input");
+			new1.setAttribute("type","checkbox");
+			var button_var=document.getElementById("add");
+			document.getElementById("form1").insertBefore(new1,add);     
+			document.getElementById("form1").insertBefore(prom_p,add);   
+			var mybr = document.createElement('br');
+			form1.insertBefore(mybr,add);
+		}
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body  ng-app="myApp" ng-controller="studentMenu">
+<div class="container-fluid">
+	<div class="col-sm-12">
+		<nav class="navbar navbar-inverse">
+		    <ul class="nav navbar-nav">
+		      <li><a href="#">Store</a></li>
+		      <li class="active"><a href="#">Home</a></li>
+		      <li><a href="#">About</a> </li>
+		      <li><a href="#">Catlog</a></li>
+		      <li><a href="#">Contact</a></li>
+		    </ul>
+				  
+		</nav>
+	</div>
+    <div class="col-sm-3">
+	    <a href="#" class="list-group-item active">Cras justo odio</a>
+	    <a href="#" class="list-group-item">Dapibus ac facillsis in</a>
+	    <a href="#" class="list-group-item">Morbi leo risus</a>
+	    <a href="#" class="list-group-item">Porta ac consectetur</a>
+	    <a href="#" class="list-group-item">Vestibulum at eros</a>
+	</div>
+	<div class="col-sm-9">
+		<form>
+			<div class="col-sm-12">
+			 	<div class="col-sm-2">
+			 		<b>search</b>
+			 	</div>
+			 	<div class="col-sm-4">
+			 		<input type="text" class="form-control" placeholder="Search by name" name="search"><br/>
+			 	</div>
+			</div>
+			<div class="col-sm-12">
+				<div class="col-sm-2">
+					<b>Add items</b>		
+				 </div>
+				<div class="col-sm-2">
+				 	<input type="text" class="form-control" placeholder="item name" name="item_name" id="item_name" ng-model="itemname">
+				</div>
+				<div class="col-sm-2">
+					<input type="text" class="form-control" placeholder="Description" name="description" id="description" ng-model="itemdesc">
+				</div>
+
+				 <div class="col-sm-2">
+					<input type="text" class="form-control" placeholder="Price" name="price" id="price" ng-model="itemprice">
+				 </div>
+			     <div class="col-sm-1">
+			        <button type="submit" class="btn btn-default" id="submit_btn" ng-click="btnclick(itemname,itemdesc,itemprice)">Add</button><br/><br/>
+			     </div>
+	  			 </div>  			 
+  	 	</form>  	 	
+
+	  	<div class="col-sm-12" id="div1" >
+		  	<div class='well well-lg' ng-repeat="x in myWelcome">
+
+				<span class='col-sm-8'><h4>  {{x.item_name}}  </h4></span>										
+				<span class='label label-primary'> <b> {{x.price |currency}}</b></span>
+				<button type='button' class='btn' id='btn_cancel' ng-click="btncancel(x.id)">x</button>
+				<span class='col-sm-12'> {{x.description}}</span>
+			</div>		
+		</div>
+	</div>
+	 <div class="col-sm-12" >
+		<nav class="navbar fixed-bottom navbar-inverse" >
+    	</nav>
+	</div> 	
+</div>	
+<script>
+
+	var app = angular.module('myApp', []);
+
+	app.factory('data',function($http){
+		var data ={};
+	   data.myfun= function() {
+	        return $http.get('/users');
+	   }
+	   data.fun_senddata=function(n,d,p){
+			var senddata={item_name:n,description:d,price:p}
+	   		return $http.post('/users',senddata);
+	   }
+	   data.deletedata=function(idbtn){     
+	   		return $http.delete('/users/' + idbtn)
+	   }
+   	   return data;
+	});
+
+	app.controller('studentMenu',function($scope, data){   
+	    data.myfun().then(function(response){
+	    	        $scope.myWelcome = response.data;
+	    });
+		$scope.btnclick=function(name,desc,price){
+			data.fun_senddata(name,desc,price).then(data.myfun().then(function(response){
+	    	        $scope.myWelcome = response.data;
+	    	        $scope.itemname=""
+	    	        $scope.itemdesc=""
+	    	        $scope.itemprice=""
+	    	}));
+		}
+
+		$scope.btncancel=function(id){
+			data.deletedata(id).then(data.myfun().then(function(response){
+	    	        $scope.myWelcome = response.data;
+	   		}));
+		}
+	});
+
+
+</script>
+</body>
+</html>
